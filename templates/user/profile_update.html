@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+	<div class="container py-5 my-5">
+		<h1>Update Profile</h1>
+		<form method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+				{% for field in form %}
+					<div class="form-group">
+						<label for="{{field.id_for_label}}">{{field.label}}</label>
+						{% render_field field class="form-control" %}
+						<small  id="passwordHelpBlock" class="form-text text-muted">{{field.help_text}}</small>
+					</div>
+				{% endfor %}
+				{% for error in field.errors %}
+					<div class="alert alert-danger">
+				          {{error}}
+		        	</div>
+				{% endfor %}
+
+			<button type="submit" class="btn btn-success"><i class="fas fa-save mr-2"></i>Save Changes</button>
+			<a class="btn btn-danger" href="{% url 'profile' %}"><i class="fas fa-times-circle mr-2"></i>Cancel</a>
+		</form>
+	</div>
+{% endblock content %}

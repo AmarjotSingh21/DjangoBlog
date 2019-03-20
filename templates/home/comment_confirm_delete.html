@@ -1,0 +1,5 @@
+<!-- This Template is included in post_deatil.html -->
+<form method="post" class="float-right"action="{% url 'comment-delete' comment.pk %}">
+	{% csrf_token %}
+	<button class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="right" title="Delete Comment" type="submit"><i class="far fa-trash-alt"></i></button>
+</form>

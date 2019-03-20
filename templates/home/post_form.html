@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+	<div class="container pt-5 my-5">
+		<form method="post" class="animation-element" enctype="multipart/form-data">
+			{% csrf_token %}
+			<h1>
+				{% if form.title.value %} <!-- if form have title field already filled . it means that it is update form otherwise create form-->
+				Update Post
+				{% else %}
+				Create Post
+				{% endif %}
+			</h1>
+			{% for field in form %}
+
+					<div class="form-group">
+					    <label for="{{field.id_for_label}}">{{field.label}}</label>
+
+					    {% if field.field.widget.input_type == "file" %}
+							{% if image %}
+							
+								<br>
+								<div class="card update-image">
+									<img src="{{image}}" alt="{{image}}">
+					      			<div class="card-footer">
+						    	  		<small class="text-muted">Currently Selected</small>
+								    </div>
+								</div>
+						      	<div class="custom-control custom-switch">
+								    <input type="checkbox" class="custom-control-input" name="{{field.html_name}}-clear" id="{{field.html_name}}-clear_id">
+								    <label class="custom-control-label" for="{{field.html_name}}-clear_id">Remove Image</label>
+							  	</div>
+							{% endif %}					    
+					    	
+					    	<div class="custom-file">
+							  	<input type="file" name="{{field.html_name}}"  id="{{field.id_for_label}}">
+							  	<label class="custom-file-label" for="{{field.id_for_label}}">Choose file</label>
+							</div>
+
+					    {% else %}
+					    
+					    	{% render_field field class="form-control" %}
+					    
+					    {% endif %}
+					</div>
+					
+				{% for error in field.errors %}
+					<div class="alert alert-danger">
+				          {{error}}
+		        	</div>
+				{% endfor %}
+        	{% endfor %}
+
+			<button type="submit" class="btn btn-success"><i class="fas fa-save mr-2"></i>Save Post</button>
+			<a 
+				{% if form.title.value %}
+				href="{% url 'post-detail' post.pk %}"
+				{% else %}
+				href="{% url 'home' %}"
+				{% endif %}
+		 		class="btn btn-danger">
+		 		<i class="fas fa-times-circle mr-2"></i>Cancel
+			</a> <!-- if form have title field already filled . it means that it is update form otherwise create form -->
+		</form>
+	</div>
+{% endblock content %}

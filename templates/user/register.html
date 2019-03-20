@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+	<div class="container-fluid form-background">
+		<div class="main-form my-5" >
+			<form method="post">
+				<h1 class="header">Sign Up</h1>
+				{% csrf_token %}
+				{% for field in form %}
+					{{ field.label_tag }}<br/>
+					{% if field.errors %}
+						{{field|add_class:"is-invalid form-control"}}
+						<div class="invalid-feedback">
+							{% for error in field.errors %}
+					           {{error}}
+				          	{% endfor %}
+			          	</div>
+		          	{% else %}
+						{{ field }}<br/>
+					{% endif %}
+					<small id="passwordHelpBlock" class="form-text text-muted">
+					  {{field.help_text}}
+					</small>
+				{% endfor %}
+				<button type="submit" class="form-button"><span>Sign Up</span></button>
+			</form>
+			<span class="text-muted">Already Have an Account?<a class="ml-2" href="{% url 'login' %}">Log in</a></span>
+		</div>
+	</div>
+{% endblock content %}

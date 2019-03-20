@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5 pt-5 animation-element">
+
+	<h1 class="font-weight-bold display-4">{{post.title}}</h1>
+	 <a href="{% url 'date-post' post.date_posted|date:'Y' post.date_posted|date:'n' %}">
+    <p class="post-extra" data-text="Posted on : "> <i class="fas fa-calendar-alt mx-2"></i> {{post.date_posted|date:"D jS M, Y"}}</p>
+  </a>
+	<a href="{% url 'author-post' post.author.username %}">
+    <p class="post-extra" data-text="Posted by : "><i class="fas fa-user-circle mx-2"></i> {{post.author}}</p>
+  </a>
+
+	{% if post.image %}
+		<img class="post-detail-image" src="{{post.image.url}}">
+	{% endif %}
+	<p class="text-justify">{{post.content|linebreaks}}</p>
+	{% if user == post.author or user.is_staff %}
+		<a href="{% url 'post-update' post.pk %}" class="btn btn-primary"><i class="fas fa-edit mr-2"></i>Update</a>
+		<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myPostModal"><i class="fas fa-trash-alt mr-2"></i>delete</button>
+	{% endif %}
+  <div class="my-5">
+    {% if comments %}
+      <h2>Comments</h2>
+      <div class="comments-container">
+        {% for comment in comments %}
+              <blockquote class="blockquote comment animation-element">
+                <p>{{comment.comment_body}}</p>
+                <footer class="blockquote-footer">
+                  <small class="text-muted">
+                    {{comment.user}}, {{comment.date_posted|timesince}} ago 
+                    {% if user == comment.user or user.is_staff %}
+                      {% include 'home/comment_confirm_delete.html' %}
+                    {% endif %}
+                  </small>
+                </footer>
+              </blockquote>
+        {% endfor %}
+      </div>
+    {% endif %}
+    <div class="add-comment p-1 mt-5">
+      <h3>Submit Comment</h3>
+      <form method="post" class="ml-1">
+        {% csrf_token%}
+        <div class="form-group">
+          <label for="{{form.comment_body.id_for_label}}"></label>
+          <textarea class="form-control" id="{{form.comment_body.id_for_label}}" rows="3" name="{{form.comment_body.html_name}}" placeholder="Enter Comment Here..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-success" name="comment-post"><i class="fas fa-comments mr-2"></i>Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- The Modal for post delete -->
+<div class="modal fade" id="myPostModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Delete Post</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        {% include 'home/post_confirm_delete.html' %}
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock content%}

@@ -1,0 +1,7 @@
+<!-- This Template is included in post_deatil.html -->
+<form method="post" action="{% url 'post-delete' post.pk %}">
+	{% csrf_token %}
+	<p>Are you Sure that You Want to Delete This Post Permanently ? </p>
+	<button class="btn btn-danger"type="submit"><i class="fas fa-check-circle mr-2"></i>Yes, I 'm Sure</button>
+	<button type="button" class="btn btn-success" data-dismiss="modal"><i class="fas fa-times-circle mr-2"></i>Nope, Cancel</button>
+</form>
