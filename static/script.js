@@ -1,3 +1,4 @@
+
 function readURL(input) {
     if (input.files && input.files[0]) {
         reader.readAsDataURL(input.files[0]);

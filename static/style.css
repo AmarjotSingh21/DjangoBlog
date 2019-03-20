@@ -1,12 +1,14 @@
 html{
 	scroll-behavior: smooth;
 }
+
 body{
 	font-family: 'Poppins', sans-serif;
 	color: #333333;
 	padding-top:56px; 
 	background-color: #E2F4F34D;
 }
+
 #aa_particles
 {
 position: absolute;
@@ -159,7 +161,7 @@ a:hover,a:focus{
 }
 
 .main-header{min-height: 100vh;
-	background-color: rgba(0,0,0,0.5 );
+	background-color: rgba(0,0,0,0.6);
 	position: relative;
 	display: flex;}
 
