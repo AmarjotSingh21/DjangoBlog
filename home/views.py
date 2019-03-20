@@ -73,10 +73,13 @@ class PostDetailView(DetailView, FormView):
         return context
 
     def form_valid(self, form):
-        form.instance.post = get_object_or_404(Post, id=self.kwargs.get('pk'))
-        form.instance.user = self.request.user
-        form.save()
-        return redirect(reverse('post-detail', kwargs={"pk": self.kwargs['pk']}))
+        if self.request.user.is_active:
+            form.instance.post = get_object_or_404(Post, id=self.kwargs.get('pk'))
+            form.instance.user = self.request.user
+            form.save()
+            return redirect(reverse('post-detail', kwargs={"pk": self.kwargs['pk']}))
+        else:
+            return redirect('login')
 
 
 class PostCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):

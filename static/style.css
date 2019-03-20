@@ -1,5 +1,6 @@
 html{
 	scroll-behavior: smooth;
+	
 }
 
 body{
@@ -190,6 +191,15 @@ h1, h2, h3, h4, h5, h6 {
     font-style: normal;
     font-weight: bold;
     letter-spacing: 0.5px;
+}
+h1{font-size:2vw}
+h2{font-size:1.5vw}
+h3{font-size:1.17vw}
+h4{font-size:1vw}
+h5{font-size:0.83vw}
+h6{font-size:0.75vw}
+p{
+	font-size: 1vw;
 }
 .main-header a.btn{
 	border-radius: 2rem;
