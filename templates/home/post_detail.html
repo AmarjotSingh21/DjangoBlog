@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container my-5 pt-5 animation-element">
 
-	<h2 class="font-weight-bold">{{post.title}}</h2>
+	<h3 class="font-weight-bold">{{post.title}}</h3>
 	 <a href="{% url 'date-post' post.date_posted|date:'Y' post.date_posted|date:'n' %}">
     <p class="post-extra" data-text="Posted on : "> <i class="fas fa-calendar-alt mx-2"></i> {{post.date_posted|date:"D jS M, Y"}}</p>
   </a>
@@ -37,17 +37,23 @@
         {% endfor %}
       </div>
     {% endif %}
+   
       <div class="add-comment p-1 mt-5">
         <h3>Submit Comment</h3>
-        <form method="post" class="ml-1">
-          {% csrf_token%}
-          <div class="form-group">
-            <label for="{{form.comment_body.id_for_label}}"></label>
-            <textarea class="form-control" id="{{form.comment_body.id_for_label}}" rows="3" name="{{form.comment_body.html_name}}" placeholder="Enter Comment Here..."></textarea>
-          </div>
-          <button type="submit" class="btn btn-success" name="comment-post"><i class="fas fa-comments mr-2"></i>Submit</button>
-        </form>
+         {% if user.is_active %}
+          <form method="post" class="ml-1">
+            {% csrf_token%}
+            <div class="form-group">
+              <label for="{{form.comment_body.id_for_label}}"></label>
+              <textarea class="form-control" id="{{form.comment_body.id_for_label}}" rows="3" name="{{form.comment_body.html_name}}" placeholder="Enter Comment Here..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-success" name="comment-post"><i class="fas fa-comments mr-2"></i>Submit</button>
+          </form>
+        {% else%}
+          <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt mr-1"></i>Login here</a> to submit comment<i class="fas fa-comments ml-2"></i>
+        {% endif %}
       </div>
+    
   </div>
 </div>
 
