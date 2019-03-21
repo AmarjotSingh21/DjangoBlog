@@ -45,7 +45,7 @@
             {% csrf_token%}
             <div class="form-group">
               <label for="{{form.comment_body.id_for_label}}"></label>
-              <textarea class="form-control" id="{{form.comment_body.id_for_label}}" rows="3" name="{{form.comment_body.html_name}}" placeholder="Enter Comment Here..."></textarea>
+              <textarea class="form-control" id="{{form.comment_body.id_for_label}}" rows="3" name="{{form.comment_body.html_name}}" placeholder="Enter Comment Here..." required=""></textarea>
             </div>
             <button type="submit" class="btn btn-success" name="comment-post"><i class="fas fa-comments mr-2"></i>Submit</button>
           </form>
