@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.shortcuts import reverse
 from django.utils.text import slugify
+import uuid
 
 
 class ApprovedPostManager(models.Manager):
@@ -12,7 +13,7 @@ class ApprovedPostManager(models.Manager):
 
 class Post(models.Model):
     title = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True, default=uuid.uuid4)
     content = models.TextField()
     image = models.ImageField(upload_to='posts/', blank=True)
     date_posted = models.DateTimeField(default=timezone.now)
