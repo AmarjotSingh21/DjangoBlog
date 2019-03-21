@@ -1,6 +1,5 @@
 html{
 	scroll-behavior: smooth;
-	font-size: 1vw;
 }
 
 body{
@@ -191,15 +190,6 @@ h1, h2, h3, h4, h5, h6 {
     font-style: normal;
     font-weight: bold;
     letter-spacing: 0.5px;
-}
-h1{font-size:2em}
-h2{font-size:1.5em}
-h3{font-size:1.17em}
-h4{font-size:1em}
-h5{font-size:0.83em}
-h6{font-size:0.75em}
-p{
-	font-size: 1em;
 }
 .main-header a.btn{
 	border-radius: 2rem;
@@ -397,22 +387,17 @@ aside .list-group-item{
 }
 
 .fly-in{
-	animation: fly-in 1s ease-out 1;
+	animation: fly-in 0.5s ease-out 1;
 }
 @keyframes fly-in{
-	0%{transform: translateX(50vh);opacity: 0;}
-	50%{transform: translateX(-7vh);opacity: 0.7;}
-	60%{transform: translateX(-7vh);opacity: 1;}
-	100%{transform: translateX(0vh);opacity: 1;}
+	0%{transform: translateX(10vw);opacity: 0;}
+	100%{transform: translateX(0vw);opacity: 1;}
 }
 
 
 @media (max-width: 576px) {
-  html {
-    font-size: 2.3vw;
-  }
   body{
-  	font-size: 1rem;
+    font-size: 2.2vw;
   }
 }
 
@@ -420,11 +405,8 @@ aside .list-group-item{
   html {
     font-size: 1.9vw;
   }
-  body{
-  	font-size: 1rem;
-  }
 }
-
+/* 
 @media (max-width: 992px) { 
 	html {
     font-size: 1.5vw;
@@ -441,4 +423,4 @@ aside .list-group-item{
   body{
   	font-size: 1rem;
   }
-}
+} */

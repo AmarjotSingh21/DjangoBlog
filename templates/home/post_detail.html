@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container my-5 pt-5 animation-element">
 
-	<h1 class="font-weight-bold">{{post.title}}</h1>
+	<h2 class="font-weight-bold">{{post.title}}</h2>
 	 <a href="{% url 'date-post' post.date_posted|date:'Y' post.date_posted|date:'n' %}">
     <p class="post-extra" data-text="Posted on : "> <i class="fas fa-calendar-alt mx-2"></i> {{post.date_posted|date:"D jS M, Y"}}</p>
   </a>
