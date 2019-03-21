@@ -15,7 +15,7 @@
 						</a>
 					</div>
 					<div class="post-row text-justify m-0">
-						{{post.content|safe|truncatewords:70|linebreaks}}
+							{{post.content|safe|truncatewords:70|linebreaks}}
 					</div>
 					<a href="{% url 'post-detail' post.pk %}" class="btn continue-reading">
 						<i class="fab fa-readme mr-2"></i>Continue Reading

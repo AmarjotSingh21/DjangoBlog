@@ -13,7 +13,7 @@
 	{% if post.image %}
 		<img class="post-detail-image" src="{{post.image.url}}">
 	{% endif %}
-	<p class="text-justify">{{post.content|linebreaks}}</p>
+	<p>{{post.content|safe|linebreaks}}</p>
 	{% if user == post.author or user.is_staff %}
 		<a href="{% url 'post-update' post.pk %}" class="btn btn-primary"><i class="fas fa-edit mr-2"></i>Update</a>
 		<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myPostModal"><i class="fas fa-trash-alt mr-2"></i>delete</button>
