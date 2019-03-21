@@ -74,27 +74,32 @@ class PostDetailView(DetailView, FormView):
 
     def form_valid(self, form):
         if self.request.user.is_active:
-            form.instance.post = get_object_or_404(Post, id=self.kwargs.get('pk'))
+            form.instance.post = get_object_or_404(Post, slug=self.kwargs.get('slug'))
             form.instance.user = self.request.user
             form.save()
-            return redirect(reverse('post-detail', kwargs={"pk": self.kwargs['pk']}))
+            return redirect(reverse('post-detail', kwargs={"slug": self.kwargs['slug']}))
         else:
             return redirect('login')
 
 
 class PostCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'image', 'content']
+    fields = ['title', 'slug', 'image', 'content']
     success_message = "Your Post is Created successfully, it will be added to Homepage after approval"
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super(PostCreateView, self).get_context_data(**kwargs)
+        context['page_name'] = "Create Post"
+        return context
+
 
 class PostUpdateView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'image', 'content']
+    fields = ['title', 'slug', 'image', 'content']
     success_message = "Your Post is Updated successfully, it will be added to Homepage after approval"
 
     def form_valid(self, form):
@@ -108,6 +113,7 @@ class PostUpdateView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixi
     def get_context_data(self, **kwargs):
         context = super(PostUpdateView, self).get_context_data(**kwargs)
 
+        context['page_name'] = "Update Post"
         if self.object.image:  # Checking if image exists
             context['image'] = self.object.image.url
         else:
@@ -133,8 +139,8 @@ class CommentDeleteView(UserPassesTestMixin, DeleteView):
     model = Comment
 
     def get_success_url(self):
-        post_pk = Comment.objects.get(id=self.kwargs['pk']).post.pk  # fetch post pk from comments pk
-        return reverse_lazy('post-detail', kwargs={"pk": post_pk})
+        post_slug = Comment.objects.get(id=self.kwargs['pk']).post.slug  # fetch post pk from comments pk
+        return reverse_lazy('post-detail', kwargs={"slug": post_slug})
 
     def test_func(self):
         user = Comment.objects.get(id=self.kwargs['pk']).user

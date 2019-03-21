@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.shortcuts import reverse
+from django.utils.text import slugify
 
 
 class ApprovedPostManager(models.Manager):
@@ -10,7 +11,8 @@ class ApprovedPostManager(models.Manager):
 
 
 class Post(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True)
     content = models.TextField()
     image = models.ImageField(upload_to='posts/', blank=True)
     date_posted = models.DateTimeField(default=timezone.now)
@@ -24,7 +26,7 @@ class Post(models.Model):
         return f'{self.title} - Approved : {self.is_approved}'
 
     def get_absolute_url(self, **kwargs):
-        return reverse('post-detail', kwargs={'pk': self.pk})
+        return reverse('post-detail', kwargs={'slug': self.slug})
 
 
 class Comment(models.Model):
