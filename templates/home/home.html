@@ -19,7 +19,7 @@
         <h3 class="p-1">Most Commented Posts</h3>
         <ul class="list-group ml-3">
           {% for post in most_commented_posts %}
-            <li class="list-group-item"><a href="{% url 'post-detail' post.pk %}">{{post.title}}<span class="badge badge-primary badge-pill float-right">{{post.comments.count}}</span></a></li>
+            <li class="list-group-item"><a href="{% url 'post-detail' post.slug %}">{{post.title}}<span class="badge badge-primary badge-pill float-right">{{post.comments.count}}</span></a></li>
           {% endfor %}
         </ul>
         </aside>
