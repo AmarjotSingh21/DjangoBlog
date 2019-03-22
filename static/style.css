@@ -292,6 +292,7 @@ h1, h2, h3, h4, h5, h6 {
 	padding: 1rem;
 	border-radius: 1rem;
 	background-color: #fff;
+	transition: 0.3s;
 }
 
 

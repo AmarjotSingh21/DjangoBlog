@@ -22,27 +22,17 @@
     {% if comments %}
       <h2>Comments</h2>
       <div class="comments-container">
-        {% for comment in comments %}
-              <blockquote class="blockquote comment animation-element">
-                <p>{{comment.comment_body}}</p>
-                <footer class="blockquote-footer">
-                  <small class="text-muted">
-                    {{comment.user}}, {{comment.date_posted|timesince}} ago 
-                    {% if user == comment.user or user.is_staff %}
-                      {% include 'home/comment_confirm_delete.html' %}
-                    {% endif %}
-                  </small>
-                </footer>
-              </blockquote>
-        {% endfor %}
+        {% include 'comments.html' %}
       </div>
     {% endif %}
    
       <div class="add-comment p-1 mt-5">
         <h3>Submit Comment</h3>
          {% if user.is_active %}
+         <div id="commentForm">
           <form method="post" class="ml-1">
             {% csrf_token%}
+            {{form.parent.as_hidden}}
             <div class="form-group">
               <label for="{{form.comment_body.id_for_label}}"></label>
               <textarea class="form-control" id="{{form.comment_body.id_for_label}}" rows="3" name="{{form.comment_body.html_name}}" placeholder="Enter Comment Here..." required=""></textarea>
@@ -52,6 +42,7 @@
         {% else%}
           <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt mr-1"></i>Login here</a> to submit comment<i class="fas fa-comments ml-2"></i>
         {% endif %}
+        </div>
       </div>
     
   </div>

@@ -136,3 +136,15 @@ $(function(){
   $("#id_slug").val(slug); 
   });
 });
+
+
+$(function(){
+    $(".reply").click(function(){
+      username = $(this).siblings("#commentId").text();
+      form = $("#commentForm").html();
+      $(".reply-container").text("");
+      $(this).parents(".blockquote-footer").siblings(".reply-container").html(form);
+      $(".reply-container #id_comment_body").focus();
+      $(".reply-container #id_parent").val(username);
+    });
+});
