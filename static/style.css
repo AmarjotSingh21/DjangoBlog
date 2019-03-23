@@ -101,14 +101,12 @@ a:hover,a:focus{
 
 .main-form label{
 	color:#333333;
-	font-size:0.9rem;
 }
 
 .main-form input{
-	width: 100%;
 	border:none;
-	margin-bottom: 1rem;
 	border-bottom: 2px solid #33333380;
+	border-radius: 0;
 }
 .main-form .form-button{
 	border-radius: 20px;
@@ -288,11 +286,18 @@ h1, h2, h3, h4, h5, h6 {
 	border-radius: 1rem;
 	background-color:#e2f0f1;
 	}
-.comments-container .comment{
-	padding: 1rem;
+.comments-container .root-comment{
+	background-color: #fff;
 	border-radius: 1rem;
+	padding: 1rem;
+	margin-top: 1rem;
+}
+.comments-container .comment{
+	margin-left: 1rem;
 	background-color: #fff;
 	transition: 0.3s;
+	border-left:2px solid #e2f0f1;
+	font-size: 1rem;
 }
 
 

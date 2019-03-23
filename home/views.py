@@ -1,4 +1,5 @@
-from django.shortcuts import get_object_or_404, redirect, reverse
+from django.shortcuts import get_object_or_404, redirect, reverse, render
+from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.views.generic import ListView, FormView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -6,8 +7,32 @@ from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q, Count
 from django.contrib import messages
-# from home.forms import CommentForm
-from .models import Post  # , Comment
+from home.forms import CommentForm
+from .models import Post, Comment
+from django.views import View
+from django.http import JsonResponse
+
+
+def register_validate(request):
+    username = request.GET.get('username', None)
+    email = request.GET.get('email', None)
+    if username:
+        is_taken = User.objects.filter(username__exact=username).exists()
+        data = {
+            'is_invalid': is_taken
+        }
+        if is_taken:
+            data['error_message'] = 'This username already exists'
+    elif email:
+        is_taken = User.objects.filter(email__exact=email).exists()
+        data = {
+            'is_invalid': is_taken
+        }
+
+        if is_taken:
+            data['error_message'] = 'This email already exists'
+
+    return JsonResponse(data)
 
 
 class PostListView(ListView):
@@ -21,7 +46,7 @@ class PostListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(PostListView, self).get_context_data(**kwargs)
-        # context['most_commented_posts'] = Post.approved.annotate(count=Count('comments')).order_by('-count')[:7]
+        context['most_commented_posts'] = Post.approved.annotate(count=Count('comments')).order_by('-count')[:7]
         return context
 
 
@@ -61,29 +86,45 @@ class PostByDateView(ListView):
         return Post.approved.filter(date_posted__year=year, date_posted__month=month).order_by('-date_posted')
 
 
-class PostDetailView(DetailView, FormView):
-    model = Post
+class PostDetailView(View):
     template_name = 'home/post_detail.html'
-    context_object_name = 'post'
-    # form_class = CommentForm
+    form_class = CommentForm
 
-    def get_context_data(self, **kwargs):
-        context = super(PostDetailView, self).get_context_data(**kwargs)
-        # context['comments'] = Comment.objects.filter(post=self.object)
-        return context
+    def get(self, request, *args, **kwargs):
+        form = self.form_class
+        post = get_object_or_404(Post, slug=kwargs.get('slug'))
+        comments = Comment.objects.filter(post=post)
+        return render(request, self.template_name, {'post': post, 'comments': comments, 'form': form})
 
-    def form_valid(self, form):
-        if self.request.user.is_active:
-            # parent_id = form.cleaned_data.get('parent')
-            # if parent_id:
-            #     parent = get_object_or_404(Comment, id=parent_id.id)  # fetching twice for some more secureuit
-            #     form.instance.parent = parent
-            # form.instance.post = get_object_or_404(Post, slug=self.kwargs.get('slug'))
-            # form.instance.user = self.request.user
-            # form.save()
-            return redirect(reverse('post-detail', kwargs={"slug": self.kwargs['slug']}))
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        if user.is_active:
+            form = self.form_class(request.POST)
+            post = get_object_or_404(Post, slug=kwargs.get('slug'))
+            comments = Comment.objects.filter(post=post)
+            if form.is_valid():
+                parent = form.cleaned_data.get('parent')
+                comment_body = form.cleaned_data.get('comment_body')
+                comment = Comment(user=user, post=post, comment_body=comment_body, parent=parent)
+                comment.save()
+                return redirect(reverse('post-detail', kwargs={'slug': kwargs.get('slug')}))
+            else:
+                return render(request, self.template_name, {'post': post, 'comments': comments, 'form': form})
         else:
             return redirect('login')
+
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
+    def get(self, *args, **kwargs):
+        comment = get_object_or_404(Comment, id=kwargs.get('pk'))
+        post_slug = kwargs.get('slug')
+        comment.delete()
+        messages.success(self.request, 'Your Comment is Deleted Successfully')
+        return redirect(reverse('post-detail', kwargs={"slug": post_slug}))
+
+    def test_func(self):
+        comment = get_object_or_404(Comment, id=self.kwargs.get('pk'))
+        return self.request.user == comment.user or self.request.user.is_staff
 
 
 class PostCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
@@ -125,27 +166,16 @@ class PostUpdateView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixi
         return context
 
 
-class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Post
-    success_url = reverse_lazy('home')
-    success_message = "Your Post is Deleted successfully"
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
 
-    def delete(self, request, *args, **kwargs):
-        messages.warning(self.request, self.success_message)
-        return super(PostDeleteView, self).delete(request, *args, **kwargs)
+    def get(self, *args, **kwargs):
+        post = get_object_or_404(Post, id=kwargs.get('pk'))
+        print(post)
+        post.delete()
+        messages.success(self.request, 'Your Comment is Deleted Successfully')
+        return redirect('home')
 
     def test_func(self):  # will return true if current user is post's author or current user is admin
-        post = self.get_object()
+        post = get_object_or_404(Post, id=self.kwargs.get('pk'))
+        print(post)
         return self.request.user == post.author or self.request.user.is_staff
-
-
-# class CommentDeleteView(UserPassesTestMixin, DeleteView):
-#     model = Comment
-
-#     def get_success_url(self):
-#         post_slug = Comment.objects.get(id=self.kwargs['pk']).post.slug  # fetch post pk from comments pk
-#         return reverse_lazy('post-detail', kwargs={"slug": post_slug})
-
-#     def test_func(self):
-#         user = Comment.objects.get(id=self.kwargs['pk']).user
-#         return self.request.user == user or self.request.user.is_staff

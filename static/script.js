@@ -54,16 +54,8 @@ $(function(){
 		$('#goToTop').css('opacity','1');
 	}
 });
-var before = 0;
-$(window).scroll(function(event){
-    var now = $(this).scrollTop();
-    if (now > before){
-        //on down code
-    } else {
-        //on up code
-    }
-    before = now;
-});
+
+
 /*Interactivity to determine when an animated element in in view. In view elements trigger our animation*/
 $(function() {
 
@@ -130,7 +122,7 @@ function slugify(str)
     return str;
 }
 
-$(function(){
+$(function(){ // slug creater
   $("#id_title").bind('keyup change',function(){
   let slug = slugify($("#id_title").val());
   $("#id_slug").val(slug); 
@@ -138,13 +130,13 @@ $(function(){
 });
 
 
-$(function(){
+$(function(){ // comment reply
     $(".reply").click(function(){
-      username = $(this).siblings("#commentId").text();
+      id = $(this).parent().siblings(".reply-container").attr('parent-id');
       form = $("#commentForm").html();
       $(".reply-container").text("");
-      $(this).parents(".blockquote-footer").siblings(".reply-container").html(form);
+      $(this).parent().siblings(".reply-container").html(form);
       $(".reply-container #id_comment_body").focus();
-      $(".reply-container #id_parent").val(username);
+      $(".reply-container #id_parent").val(id);
     });
 });

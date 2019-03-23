@@ -29,15 +29,15 @@ class Post(models.Model):
         return reverse('post-detail', kwargs={'slug': self.slug})
 
 
-# class Comment(MPTTModel):
-#     comment_body = models.TextField(blank=False)
-#     # user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     # post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
-#     # date_posted = models.DateTimeField(auto_now_add=True)
-#     # parent = TreeForeignKey('self', null=True, db_index=True, default=None, on_delete=models.CASCADE, related_name='children')
+class Comment(MPTTModel):
+    comment_body = models.TextField(blank=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    date_posted = models.DateTimeField(auto_now_add=True)
+    parent = TreeForeignKey('self', null=True, db_index=True, default=None, blank=True, on_delete=models.CASCADE, related_name='children')
 
-#     # class Meta:
-#     #     ordering = ['-date_posted']
+    class Meta:
+        ordering = ['-date_posted']
 
-#     # def __str__(self):
-#     #     return f'Comment by {self.user} on {self.post}'
+    def __str__(self):
+        return f'Comment by {self.user} on {self.post}'
