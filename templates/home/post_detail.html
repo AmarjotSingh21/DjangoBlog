@@ -35,7 +35,7 @@
               {% for error in form.parent.errors %}
                 <h2>{{error}}</h2>
               {% endfor %}
-              {% render_field %}
+              {{form.parent.as_hidden}}
               <div class="form-group">
                 <textarea name="{{form.comment_body.html_name}}" id="{{form.comment_body.id_for_label}}" class="form-control"></textarea>
               </div>
